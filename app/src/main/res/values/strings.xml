@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Digital Contact Tracing</string>
+    <string name="title">DIGITAL CONTACT TRACING</string>
+    <string name="lab_name">© Gautam\'s Lab</string>
+    <string name="bluetooth_logo">Bluetooth Logo</string>
+    <string name="tower_logo">tower_logo</string>
+    <string name="dbm">dbm</string>
+    <string name="device_list">DEVICES</string>
+    <string name="scan">scan</string>
+</resources>
