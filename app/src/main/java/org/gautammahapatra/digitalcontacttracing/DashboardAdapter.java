@@ -11,40 +11,47 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.DashboardViewHolder> {
+public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.DashboardViewHolder>
+{
 
     private Context context;
     private List<DashboardDataBinder> dashboardDataBinderList;
 
-    public DashboardAdapter(Context context, List<DashboardDataBinder> dashboardDataBinderList) {
+    public DashboardAdapter(Context context, List<DashboardDataBinder> dashboardDataBinderList)
+    {
         this.context = context;
         this.dashboardDataBinderList = dashboardDataBinderList;
     }
 
     @NonNull
     @Override
-    public DashboardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public DashboardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
+    {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.recycler_layout, parent, false);
         return new DashboardViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DashboardViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull DashboardViewHolder holder, int position)
+    {
         holder.signalStrength.setText(dashboardDataBinderList.get(position).getSignalStrength());
         holder.deviceType.setText(dashboardDataBinderList.get(position).getDeviceType());
         holder.deviceName.setText(dashboardDataBinderList.get(position).getDeviceName());
     }
 
     @Override
-    public int getItemCount() {
+    public int getItemCount()
+    {
         return dashboardDataBinderList.size();
     }
 
-    public class DashboardViewHolder extends RecyclerView.ViewHolder {
+    public class DashboardViewHolder extends RecyclerView.ViewHolder
+    {
         TextView signalStrength, deviceType, deviceName;
 
-        public DashboardViewHolder(@NonNull View itemView) {
+        public DashboardViewHolder(@NonNull View itemView)
+        {
             super(itemView);
             signalStrength = itemView.findViewById(R.id.signal_strength);
             deviceType = itemView.findViewById(R.id.device_type);
@@ -55,36 +62,44 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Dash
 
 }
 
-class DashboardDataBinder {
+class DashboardDataBinder
+{
     private String signalStrength, deviceType, deviceName;
 
-    public DashboardDataBinder(String signalStrength, String deviceType, String deviceName) {
+    public DashboardDataBinder(String signalStrength, String deviceType, String deviceName)
+    {
         this.signalStrength = signalStrength;
         this.deviceType = deviceType;
         this.deviceName = deviceName;
     }
 
-    public String getSignalStrength() {
+    public String getSignalStrength()
+    {
         return signalStrength;
     }
 
-    public void setSignalStrength(String signalStrength) {
+    public void setSignalStrength(String signalStrength)
+    {
         this.signalStrength = signalStrength;
     }
 
-    public String getDeviceType() {
+    public String getDeviceType()
+    {
         return deviceType;
     }
 
-    public void setDeviceType(String deviceType) {
+    public void setDeviceType(String deviceType)
+    {
         this.deviceType = deviceType;
     }
 
-    public String getDeviceName() {
+    public String getDeviceName()
+    {
         return deviceName;
     }
 
-    public void setDeviceName(String deviceName) {
+    public void setDeviceName(String deviceName)
+    {
         this.deviceName = deviceName;
     }
 }
