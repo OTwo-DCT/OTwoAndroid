@@ -63,7 +63,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="1dp"
                         android:fontFamily="@font/montserrat"
-                        android:text="-60"
+                        android:text=""
                         android:textColor="#1b1b1b"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -97,7 +97,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="1dp"
                         android:fontFamily="@font/montserrat"
-                        android:text="1"
+                        android:text=""
                         android:textColor="#1b1b1b"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -106,7 +106,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat"
-                        android:text="@string/meter"
+                        android:text="@string/tx"
                         android:textColor="#7a7a7a"
                         android:textSize="15sp"
                         android:textStyle="normal" />

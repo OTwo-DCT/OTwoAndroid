@@ -73,6 +73,7 @@ class DashboardDataBinder {
             double Pt = 20;
             distance = String.valueOf(Math.pow(d0 * 10., ((Pt - Pl_d0 - signalStrength) / (10 * eta * K_i))));
         }
+        distance = String.valueOf(deviceClass);
         this.signalStrength = String.valueOf(signalStrength);
         this.deviceName = deviceName;
     }

@@ -29,7 +29,7 @@ public class Dashboard extends AppCompatActivity {
     Button scanButton;
 
     private BluetoothAdapter bluetoothAdapter;
-    private static final long SCAN_PERIOD = 100000;
+    private static final long SCAN_PERIOD = 30000;
     private BluetoothManager bluetoothManager;
     private BluetoothLeScanner bluetoothLeScanner;
     private boolean mScanning;
@@ -40,10 +40,12 @@ public class Dashboard extends AppCompatActivity {
                 public void onScanResult(int callbackType, ScanResult result) {
                     super.onScanResult(callbackType, result);
                     BluetoothDevice device = result.getDevice();
-                    int bluetoothClass = device.getBluetoothClass().getMajorDeviceClass();
+                    int transmitPower = result.getTxPower();
                     int signalStrength = result.getRssi();
                     String deviceName = device.getName();
-                    DashboardDataBinder binder = new DashboardDataBinder(signalStrength, bluetoothClass, deviceName);
+                    Log.d("Dashboard", String.valueOf(transmitPower));
+                    Log.d("Dashboard", String.valueOf(signalStrength));
+                    DashboardDataBinder binder = new DashboardDataBinder(signalStrength, transmitPower, deviceName);
                     AddCard(binder);
                 }
             };
