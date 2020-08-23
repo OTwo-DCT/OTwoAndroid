@@ -7,4 +7,6 @@
     <string name="dbm">dbm</string>
     <string name="device_list">DEVICES</string>
     <string name="scan">scan</string>
+    <string name="meter">meter</string>
+    <string name="distance">distance</string>
 </resources>

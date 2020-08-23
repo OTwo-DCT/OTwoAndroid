@@ -20,17 +20,12 @@
             android:layout_gravity="center"
             android:gravity="center_vertical"
             android:orientation="horizontal">
-
             <ImageView
                 android:layout_width="10dp"
                 android:layout_height="20dp"
                 android:contentDescription="@string/bluetooth_logo"
+                android:layout_marginEnd="3dp"
                 android:src="@drawable/bluetooth_icon" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="20dp" />
 
             <TextView
                 android:id="@+id/device_name"
@@ -38,55 +33,86 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
-                android:text=""
+                android:layout_marginEnd="5dp"
                 android:textColor="#1b1b1b"
+                android:text="ABCD"
                 android:textStyle="normal" />
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="20dp" />
-
-            <ImageView
-                android:layout_width="10dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="6dp"
-                android:contentDescription="@string/tower_logo"
-                android:src="@drawable/tower" />
-
-            <TextView
-                android:id="@+id/signal_strength"
-                style="@style/MaterialAlertDialog.MaterialComponents.Title.Text"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:fontFamily="@font/montserrat"
-                android:text=""
-                android:textColor="#1b1b1b"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
 
-            <TextView
+                <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/dbm" />
+                    android:orientation="horizontal">
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="20dp" />
+                    <ImageView
+                        android:layout_width="10dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="6dp"
+                        android:contentDescription="@string/tower_logo"
+                        android:src="@drawable/tower" />
 
-            <TextView
-                android:id="@+id/device_type"
-                style="@style/MaterialAlertDialog.MaterialComponents.Title.Text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:fontFamily="@font/montserrat"
-                android:text=""
-                android:textColor="#1b1b1b"
-                android:textSize="15sp"
-                android:textStyle="normal" />
+                    <TextView
+                        android:id="@+id/signal_strength"
+                        style="@style/MaterialAlertDialog.MaterialComponents.Title.Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="1dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="-60"
+                        android:textColor="#1b1b1b"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat"
+                        android:text="@string/dbm"
+                        android:textColor="#7a7a7a"
+                        android:textSize="15sp"
+                        android:textStyle="normal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="6dp"
+                        android:contentDescription="@string/distance"
+                        android:src="@drawable/distance" />
+
+                    <TextView
+                        android:id="@+id/distance"
+                        style="@style/MaterialAlertDialog.MaterialComponents.Title.Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="1dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="1"
+                        android:textColor="#1b1b1b"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat"
+                        android:text="@string/meter"
+                        android:textColor="#7a7a7a"
+                        android:textSize="15sp"
+                        android:textStyle="normal" />
+                </LinearLayout>
+            </LinearLayout>
+
 
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

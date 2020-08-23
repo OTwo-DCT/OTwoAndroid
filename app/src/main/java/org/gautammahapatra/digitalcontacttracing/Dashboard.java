@@ -2,11 +2,13 @@ package org.gautammahapatra.digitalcontacttracing;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,32 +27,50 @@ public class Dashboard extends AppCompatActivity {
     List<DashboardDataBinder> dashboardDataBinderList;
     DashboardAdapter adapter;
     Button scanButton;
-    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            Log.d("Dashboard", action);
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
-                AddCard(dashboardDataBinderList.size(), new DashboardDataBinder(String.valueOf(rssi), String.valueOf(device.getBluetoothClass().getMajorDeviceClass()), device.getName()));
-            }
-        }
-    };
+
     private BluetoothAdapter bluetoothAdapter;
+    private static final long SCAN_PERIOD = 100000;
+    private BluetoothManager bluetoothManager;
+    private BluetoothLeScanner bluetoothLeScanner;
+    private boolean mScanning;
+    private Handler handler = new Handler();
+    private ScanCallback leScanCallback =
+            new ScanCallback() {
+                @Override
+                public void onScanResult(int callbackType, ScanResult result) {
+                    super.onScanResult(callbackType, result);
+                    BluetoothDevice device = result.getDevice();
+                    int bluetoothClass = device.getBluetoothClass().getMajorDeviceClass();
+                    int signalStrength = result.getRssi();
+                    String deviceName = device.getName();
+                    DashboardDataBinder binder = new DashboardDataBinder(signalStrength, bluetoothClass, deviceName);
+                    AddCard(binder);
+                }
+            };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        bluetoothAdapter.cancelDiscovery();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        assert bluetoothManager != null;
+        bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        assert bluetoothManager != null;
+        bluetoothAdapter = bluetoothManager.getAdapter();
+        bluetoothLeScanner = bluetoothAdapter.getBluetoothLeScanner();
         scanButton = findViewById(R.id.scan_btn);
 
+        mScanning = false;
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bluetoothAdapter.startDiscovery();
+                scanLeDevice();
                 Log.d("Dashboard", "Start Discovery");
             }
         });
@@ -61,8 +81,7 @@ public class Dashboard extends AppCompatActivity {
             recyclerView = findViewById(R.id.recycler_view);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-            registerReceiver(broadcastReceiver, intentFilter);
+
         } catch (Exception e) {
             e.printStackTrace();
             Log.d("Dashboard", Objects.requireNonNull(e.getMessage()));
@@ -70,19 +89,35 @@ public class Dashboard extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        bluetoothAdapter.cancelDiscovery();
-    }
-
-    private void AddCard(int index, DashboardDataBinder dashboardDataBinder) {
-        dashboardDataBinderList.add(index, dashboardDataBinder);
-        adapter.notifyItemInserted(index);
-    }
-
     private void RemoveCard(int index) {
         dashboardDataBinderList.remove(index);
         adapter.notifyItemRemoved(index);
+    }
+
+    private void AddCard(DashboardDataBinder dashboardDataBinder) {
+        int index = dashboardDataBinderList.size();
+        dashboardDataBinderList.add(index, dashboardDataBinder);
+        adapter.notifyItemInserted(index);
+        Log.d("Dashboard", dashboardDataBinder.toString());
+    }
+
+    private void scanLeDevice() {
+        if (!mScanning) {
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mScanning = false;
+                    bluetoothLeScanner.stopScan(leScanCallback);
+                    Log.d("Dashboard", "Stopping");
+                }
+            }, SCAN_PERIOD);
+
+            mScanning = true;
+            bluetoothLeScanner.startScan(leScanCallback);
+            Log.d("Dashboard", "Scanning");
+        } else {
+            mScanning = false;
+            bluetoothLeScanner.stopScan(leScanCallback);
+        }
     }
 }

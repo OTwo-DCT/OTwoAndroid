@@ -32,8 +32,8 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Dash
     @Override
     public void onBindViewHolder(@NonNull DashboardViewHolder holder, int position) {
         holder.signalStrength.setText(dashboardDataBinderList.get(position).getSignalStrength());
-        holder.deviceType.setText(dashboardDataBinderList.get(position).getDeviceType());
         holder.deviceName.setText(dashboardDataBinderList.get(position).getDeviceName());
+        holder.distance.setText(dashboardDataBinderList.get(position).getDistance());
     }
 
     @Override
@@ -41,14 +41,14 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Dash
         return dashboardDataBinderList.size();
     }
 
-    public class DashboardViewHolder extends RecyclerView.ViewHolder {
-        TextView signalStrength, deviceType, deviceName;
+    class DashboardViewHolder extends RecyclerView.ViewHolder {
+        TextView signalStrength, deviceName, distance;
 
-        public DashboardViewHolder(@NonNull View itemView) {
+        DashboardViewHolder(@NonNull View itemView) {
             super(itemView);
             signalStrength = itemView.findViewById(R.id.signal_strength);
-            deviceType = itemView.findViewById(R.id.device_type);
             deviceName = itemView.findViewById(R.id.device_name);
+            distance = itemView.findViewById(R.id.distance);
         }
     }
 
@@ -56,35 +56,57 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Dash
 }
 
 class DashboardDataBinder {
-    private String signalStrength, deviceType, deviceName;
+    private String signalStrength, distance, deviceName;
 
-    public DashboardDataBinder(String signalStrength, String deviceType, String deviceName) {
-        this.signalStrength = signalStrength;
-        this.deviceType = deviceType;
+    DashboardDataBinder(int signalStrength, int deviceClass, String deviceName) {
+        double d0 = 1;
+        double eta = 2;
+        double K_i = 1;
+        double Pl_d0 = -55;
+        if (deviceClass == 3) {
+            double Pt = 0;
+            distance = String.valueOf(Math.pow(d0 * 10., ((Pt - Pl_d0 - signalStrength) / (10 * eta * K_i))));
+        } else if (deviceClass == 2) {
+            double Pt = 4;
+            distance = String.valueOf(Math.pow(d0 * 10., ((Pt - Pl_d0 - signalStrength) / (10 * eta * K_i))));
+        } else if (deviceClass == 1) {
+            double Pt = 20;
+            distance = String.valueOf(Math.pow(d0 * 10., ((Pt - Pl_d0 - signalStrength) / (10 * eta * K_i))));
+        }
+        this.signalStrength = String.valueOf(signalStrength);
         this.deviceName = deviceName;
     }
 
-    public String getSignalStrength() {
+    String getSignalStrength() {
         return signalStrength;
     }
 
-    public void setSignalStrength(String signalStrength) {
+    void setSignalStrength(String signalStrength) {
         this.signalStrength = signalStrength;
     }
 
-    public String getDeviceType() {
-        return deviceType;
+    String getDistance() {
+        return distance;
     }
 
-    public void setDeviceType(String deviceType) {
-        this.deviceType = deviceType;
+    void setDistance(String distance) {
+        this.distance = distance;
     }
 
-    public String getDeviceName() {
+    String getDeviceName() {
         return deviceName;
     }
 
-    public void setDeviceName(String deviceName) {
+    void setDeviceName(String deviceName) {
         this.deviceName = deviceName;
+    }
+
+    @Override
+    public String toString() {
+        return "DashboardDataBinder{" +
+                "signalStrength='" + signalStrength + '\'' +
+                ", distance='" + distance + '\'' +
+                ", deviceName='" + deviceName + '\'' +
+                '}';
     }
 }
