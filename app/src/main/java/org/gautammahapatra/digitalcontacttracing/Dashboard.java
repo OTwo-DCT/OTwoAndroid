@@ -40,12 +40,9 @@ public class Dashboard extends AppCompatActivity {
                 public void onScanResult(int callbackType, ScanResult result) {
                     super.onScanResult(callbackType, result);
                     BluetoothDevice device = result.getDevice();
-                    int transmitPower = result.getTxPower();
                     int signalStrength = result.getRssi();
                     String deviceName = device.getName();
-                    Log.d("Dashboard", String.valueOf(transmitPower));
-                    Log.d("Dashboard", String.valueOf(signalStrength));
-                    DashboardDataBinder binder = new DashboardDataBinder(signalStrength, transmitPower, deviceName);
+                    DashboardDataBinder binder = new DashboardDataBinder(signalStrength, deviceName);
                     AddCard(binder);
                 }
             };
@@ -83,12 +80,10 @@ public class Dashboard extends AppCompatActivity {
             recyclerView = findViewById(R.id.recycler_view);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         } catch (Exception e) {
             e.printStackTrace();
             Log.d("Dashboard", Objects.requireNonNull(e.getMessage()));
         }
-
     }
 
     private void RemoveCard(int index) {

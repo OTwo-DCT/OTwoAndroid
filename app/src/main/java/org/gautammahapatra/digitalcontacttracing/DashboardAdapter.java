@@ -16,7 +16,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Dash
     private Context context;
     private List<DashboardDataBinder> dashboardDataBinderList;
 
-    public DashboardAdapter(Context context, List<DashboardDataBinder> dashboardDataBinderList) {
+    DashboardAdapter(Context context, List<DashboardDataBinder> dashboardDataBinderList) {
         this.context = context;
         this.dashboardDataBinderList = dashboardDataBinderList;
     }
@@ -58,31 +58,22 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Dash
 class DashboardDataBinder {
     private String signalStrength, distance, deviceName;
 
-    DashboardDataBinder(int signalStrength, int deviceClass, String deviceName) {
+    DashboardDataBinder(int signalStrength, String deviceName) {
         double d0 = 1;
         double eta = 2;
         double K_i = 1;
         double Pl_d0 = -55;
-        if (deviceClass == 3) {
-            double Pt = 0;
-            distance = String.valueOf(Math.pow(d0 * 10., ((Pt - Pl_d0 - signalStrength) / (10 * eta * K_i))));
-        } else if (deviceClass == 2) {
-            double Pt = 4;
-            distance = String.valueOf(Math.pow(d0 * 10., ((Pt - Pl_d0 - signalStrength) / (10 * eta * K_i))));
-        } else if (deviceClass == 1) {
-            double Pt = 20;
-            distance = String.valueOf(Math.pow(d0 * 10., ((Pt - Pl_d0 - signalStrength) / (10 * eta * K_i))));
-        }
-        distance = String.valueOf(deviceClass);
-        this.signalStrength = String.valueOf(signalStrength);
-        this.deviceName = deviceName;
+        double Pt = 0;
+        setDistance(String.valueOf(Math.pow(d0 * 10., ((Pt - Pl_d0 + signalStrength) / (10 * eta * K_i)))));
+        setSignalStrength(String.valueOf(signalStrength));
+        setDeviceName(deviceName);
     }
 
     String getSignalStrength() {
         return signalStrength;
     }
 
-    void setSignalStrength(String signalStrength) {
+    private void setSignalStrength(String signalStrength) {
         this.signalStrength = signalStrength;
     }
 
@@ -90,7 +81,7 @@ class DashboardDataBinder {
         return distance;
     }
 
-    void setDistance(String distance) {
+    private void setDistance(String distance) {
         this.distance = distance;
     }
 
@@ -98,7 +89,7 @@ class DashboardDataBinder {
         return deviceName;
     }
 
-    void setDeviceName(String deviceName) {
+    private void setDeviceName(String deviceName) {
         this.deviceName = deviceName;
     }
 

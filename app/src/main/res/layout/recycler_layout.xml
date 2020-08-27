@@ -35,7 +35,7 @@
                 android:fontFamily="@font/montserrat"
                 android:layout_marginEnd="5dp"
                 android:textColor="#1b1b1b"
-                android:text="ABCD"
+                android:text=""
                 android:textStyle="normal" />
 
             <LinearLayout
@@ -81,6 +81,7 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -106,7 +107,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat"
-                        android:text="@string/tx"
+                        android:text="@string/meter"
                         android:textColor="#7a7a7a"
                         android:textSize="15sp"
                         android:textStyle="normal" />
