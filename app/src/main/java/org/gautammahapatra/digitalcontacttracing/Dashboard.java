@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -106,12 +107,16 @@ public class Dashboard extends AppCompatActivity {
                     mScanning = false;
                     bluetoothLeScanner.stopScan(leScanCallback);
                     Log.d("Dashboard", "Stopping");
+                    Toast.makeText(getApplicationContext(), "Bluetooth Stopping", Toast.LENGTH_LONG).show();
+                    scanButton.setEnabled(true);
                 }
             }, SCAN_PERIOD);
 
             mScanning = true;
             bluetoothLeScanner.startScan(leScanCallback);
             Log.d("Dashboard", "Scanning");
+            Toast.makeText(getApplicationContext(), "Bluetooth Scanning", Toast.LENGTH_LONG).show();
+            scanButton.setEnabled(false);
         } else {
             mScanning = false;
             bluetoothLeScanner.stopScan(leScanCallback);
