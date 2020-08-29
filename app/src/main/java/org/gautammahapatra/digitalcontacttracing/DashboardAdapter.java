@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.DashboardViewHolder> {
@@ -41,7 +43,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Dash
         return dashboardDataBinderList.size();
     }
 
-    class DashboardViewHolder extends RecyclerView.ViewHolder {
+    static class DashboardViewHolder extends RecyclerView.ViewHolder {
         TextView signalStrength, deviceName, distance;
 
         DashboardViewHolder(@NonNull View itemView) {
@@ -51,8 +53,6 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Dash
             distance = itemView.findViewById(R.id.distance);
         }
     }
-
-
 }
 
 class DashboardDataBinder {
@@ -64,7 +64,9 @@ class DashboardDataBinder {
         double K_i = 1;
         double Pl_d0 = -55;
         double Pt = 0;
-        setDistance(String.valueOf(Math.pow(d0 * 10., ((Pt - Pl_d0 + signalStrength) / (10 * eta * K_i)))));
+        double distance = Math.pow(d0 * 10., ((Pt + Pl_d0 - signalStrength) / (10 * eta * K_i)));
+        BigDecimal bd = new BigDecimal(distance).setScale(2, RoundingMode.HALF_UP);
+        setDistance(String.valueOf(bd.doubleValue()));
         setSignalStrength(String.valueOf(signalStrength));
         setDeviceName(deviceName);
     }

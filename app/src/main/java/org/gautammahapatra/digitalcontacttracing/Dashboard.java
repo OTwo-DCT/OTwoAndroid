@@ -19,8 +19,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Dashboard extends AppCompatActivity {
 
@@ -43,6 +46,16 @@ public class Dashboard extends AppCompatActivity {
                     BluetoothDevice device = result.getDevice();
                     int signalStrength = result.getRssi();
                     String deviceName = device.getName();
+                    String txPower = "";
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        txPower = String.valueOf(result.getTxPower());
+                    }
+                    String txPowerLevel = "";
+                    if (result.getScanRecord() != null) {
+                        txPowerLevel = String.valueOf(result.getScanRecord().getTxPowerLevel());
+                    }
+                    String[] data = {result.getDevice().getName(), deviceName, String.valueOf(result.getRssi()), txPower, txPowerLevel};
+                    Log.d("Dashboard", Arrays.toString(data));
                     DashboardDataBinder binder = new DashboardDataBinder(signalStrength, deviceName);
                     AddCard(binder);
                 }
@@ -87,15 +100,27 @@ public class Dashboard extends AppCompatActivity {
         }
     }
 
-    private void RemoveCard(int index) {
-        dashboardDataBinderList.remove(index);
-        adapter.notifyItemRemoved(index);
+    private void RemoveCard(AtomicInteger index) {
+        dashboardDataBinderList.remove(index.get());
+        adapter.notifyItemRemoved(index.get());
     }
 
     private void AddCard(DashboardDataBinder dashboardDataBinder) {
-        int index = dashboardDataBinderList.size();
-        dashboardDataBinderList.add(index, dashboardDataBinder);
-        adapter.notifyItemInserted(index);
+        AtomicInteger index = new AtomicInteger();
+        AtomicBoolean exists = new AtomicBoolean(false);
+        dashboardDataBinderList.forEach((device) -> {
+            if (device.getDeviceName().equals(dashboardDataBinder.getDeviceName())) {
+                exists.set(true);
+                index.set(dashboardDataBinderList.indexOf(device));
+            }
+        });
+        if (!exists.get()) {
+            index.set(dashboardDataBinderList.size());
+        } else {
+            RemoveCard(index);
+        }
+        dashboardDataBinderList.add(index.get(), dashboardDataBinder);
+        adapter.notifyItemInserted(index.get());
         Log.d("Dashboard", dashboardDataBinder.toString());
     }
 
@@ -107,7 +132,7 @@ public class Dashboard extends AppCompatActivity {
                     mScanning = false;
                     bluetoothLeScanner.stopScan(leScanCallback);
                     Log.d("Dashboard", "Stopping");
-                    Toast.makeText(getApplicationContext(), "Bluetooth Stopping", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Stopping", Toast.LENGTH_LONG).show();
                     scanButton.setEnabled(true);
                 }
             }, SCAN_PERIOD);
@@ -115,7 +140,7 @@ public class Dashboard extends AppCompatActivity {
             mScanning = true;
             bluetoothLeScanner.startScan(leScanCallback);
             Log.d("Dashboard", "Scanning");
-            Toast.makeText(getApplicationContext(), "Bluetooth Scanning", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Scanning", Toast.LENGTH_LONG).show();
             scanButton.setEnabled(false);
         } else {
             mScanning = false;
