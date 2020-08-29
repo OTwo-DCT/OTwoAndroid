@@ -108,6 +108,8 @@ public class Dashboard extends AppCompatActivity {
     private void AddCard(DashboardDataBinder dashboardDataBinder) {
         AtomicInteger index = new AtomicInteger();
         AtomicBoolean exists = new AtomicBoolean(false);
+        if (dashboardDataBinder.getDeviceName() == null)
+            dashboardDataBinder.setDeviceName("Unknown");
         dashboardDataBinderList.forEach((device) -> {
             if (device.getDeviceName().equals(dashboardDataBinder.getDeviceName())) {
                 exists.set(true);
