@@ -6,20 +6,22 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -33,11 +35,24 @@ public class Dashboard extends AppCompatActivity {
     Button scanButton;
 
     private BluetoothAdapter bluetoothAdapter;
-    private static final long SCAN_PERIOD = 30000;
+    private static final long LE_SCAN_PERIOD_MILLI = 30000;
     private BluetoothManager bluetoothManager;
     private BluetoothLeScanner bluetoothLeScanner;
     private boolean mScanning;
     private Handler handler = new Handler();
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                int signalStrength = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
+                assert device != null;
+                String deviceName = device.getName();
+                DashboardDataBinder binder = new DashboardDataBinder(signalStrength, deviceName, "B");
+                AddCard(binder);
+            }
+        }
+    };
     private ScanCallback leScanCallback =
             new ScanCallback() {
                 @Override
@@ -46,17 +61,7 @@ public class Dashboard extends AppCompatActivity {
                     BluetoothDevice device = result.getDevice();
                     int signalStrength = result.getRssi();
                     String deviceName = device.getName();
-                    String txPower = "";
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                        txPower = String.valueOf(result.getTxPower());
-                    }
-                    String txPowerLevel = "";
-                    if (result.getScanRecord() != null) {
-                        txPowerLevel = String.valueOf(result.getScanRecord().getTxPowerLevel());
-                    }
-                    String[] data = {result.getDevice().getName(), deviceName, String.valueOf(result.getRssi()), txPower, txPowerLevel};
-                    Log.d("Dashboard", Arrays.toString(data));
-                    DashboardDataBinder binder = new DashboardDataBinder(signalStrength, deviceName);
+                    DashboardDataBinder binder = new DashboardDataBinder(signalStrength, deviceName, "BLE");
                     AddCard(binder);
                 }
             };
@@ -65,6 +70,7 @@ public class Dashboard extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         bluetoothAdapter.cancelDiscovery();
+        unregisterReceiver(receiver);
     }
 
     @Override
@@ -78,14 +84,16 @@ public class Dashboard extends AppCompatActivity {
         bluetoothAdapter = bluetoothManager.getAdapter();
         bluetoothLeScanner = bluetoothAdapter.getBluetoothLeScanner();
         scanButton = findViewById(R.id.scan_btn);
-
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(receiver, filter);
         mScanning = false;
-        scanButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                scanLeDevice();
-                Log.d("Dashboard", "Start Discovery");
-            }
+        scanButton.setOnClickListener(v -> {
+            handler.postDelayed(() -> {
+                bluetoothAdapter.startDiscovery();
+                Log.d("Dashboard", "Start Generic Discovery");
+            }, LE_SCAN_PERIOD_MILLI + 1);
+            scanLeDevice();
+            Log.d("Dashboard", "Start LE Discovery");
         });
 
         try {
@@ -128,16 +136,13 @@ public class Dashboard extends AppCompatActivity {
 
     private void scanLeDevice() {
         if (!mScanning) {
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mScanning = false;
-                    bluetoothLeScanner.stopScan(leScanCallback);
-                    Log.d("Dashboard", "Stopping");
-                    Toast.makeText(getApplicationContext(), "Stopping", Toast.LENGTH_LONG).show();
-                    scanButton.setEnabled(true);
-                }
-            }, SCAN_PERIOD);
+            handler.postDelayed(() -> {
+                mScanning = false;
+                bluetoothLeScanner.stopScan(leScanCallback);
+                Log.d("Dashboard", "Stopping");
+                Toast.makeText(getApplicationContext(), "Stopping", Toast.LENGTH_LONG).show();
+                scanButton.setEnabled(true);
+            }, LE_SCAN_PERIOD_MILLI);
 
             mScanning = true;
             bluetoothLeScanner.startScan(leScanCallback);
@@ -148,5 +153,11 @@ public class Dashboard extends AppCompatActivity {
             mScanning = false;
             bluetoothLeScanner.stopScan(leScanCallback);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
     }
 }

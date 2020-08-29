@@ -23,7 +23,7 @@ import androidx.core.content.ContextCompat;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int COARSE_LOCATIONPERMISSION_CODE = 1;
+    private static final int COARSE_LOCATION_PERMISSION_CODE = 1;
     private BluetoothAdapter bluetoothAdapter;
     private Intent btEnablingIntent;
     private Integer requestCodeEnable;
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION);
+        ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         btEnablingIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         requestCodeEnable = 1;
@@ -64,14 +64,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestLocationAccess() {
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             loadDashBoardScreen();
         } else {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
                 new AlertDialog.Builder(this).setTitle("Location Permission").setMessage("Permission needed for scanning nearby bluetooth devices").setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, COARSE_LOCATIONPERMISSION_CODE);
+                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, COARSE_LOCATION_PERMISSION_CODE);
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
@@ -80,15 +80,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }).create().show();
             } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, COARSE_LOCATIONPERMISSION_CODE);
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, COARSE_LOCATION_PERMISSION_CODE);
             }
         }
-
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == COARSE_LOCATIONPERMISSION_CODE) {
+        if (requestCode == COARSE_LOCATION_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 loadDashBoardScreen();
             } else {
