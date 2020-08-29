@@ -91,7 +91,7 @@ class DashboardDataBinder {
         return deviceName;
     }
 
-    private void setDeviceName(String deviceName) {
+    void setDeviceName(String deviceName) {
         this.deviceName = deviceName;
     }
 
