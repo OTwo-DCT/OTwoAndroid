@@ -20,6 +20,17 @@
             android:layout_gravity="center"
             android:gravity="center_vertical"
             android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/technology"
+                style="@style/TextAppearance.MaterialComponents.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:fontFamily="@font/montserrat"
+                android:text=""
+                android:textColor="#1b1b1b"
+                android:textStyle="normal" />
             <ImageView
                 android:layout_width="10dp"
                 android:layout_height="20dp"

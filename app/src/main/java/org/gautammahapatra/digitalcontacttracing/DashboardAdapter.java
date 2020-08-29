@@ -36,6 +36,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Dash
         holder.signalStrength.setText(dashboardDataBinderList.get(position).getSignalStrength());
         holder.deviceName.setText(dashboardDataBinderList.get(position).getDeviceName());
         holder.distance.setText(dashboardDataBinderList.get(position).getDistance());
+        holder.technology.setText(dashboardDataBinderList.get(position).getTechnology());
     }
 
     @Override
@@ -44,21 +45,22 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Dash
     }
 
     static class DashboardViewHolder extends RecyclerView.ViewHolder {
-        TextView signalStrength, deviceName, distance;
+        TextView signalStrength, deviceName, distance, technology;
 
         DashboardViewHolder(@NonNull View itemView) {
             super(itemView);
             signalStrength = itemView.findViewById(R.id.signal_strength);
             deviceName = itemView.findViewById(R.id.device_name);
             distance = itemView.findViewById(R.id.distance);
+            technology = itemView.findViewById(R.id.technology);
         }
     }
 }
 
 class DashboardDataBinder {
-    private String signalStrength, distance, deviceName;
+    private String signalStrength, distance, deviceName, technology;
 
-    DashboardDataBinder(int signalStrength, String deviceName) {
+    DashboardDataBinder(int signalStrength, String deviceName, String technology) {
         double d0 = 1;
         double eta = 2;
         double K_i = 1;
@@ -69,6 +71,7 @@ class DashboardDataBinder {
         setDistance(String.valueOf(bd.doubleValue()));
         setSignalStrength(String.valueOf(signalStrength));
         setDeviceName(deviceName);
+        setTechnology(technology);
     }
 
     String getSignalStrength() {
@@ -95,12 +98,21 @@ class DashboardDataBinder {
         this.deviceName = deviceName;
     }
 
+    String getTechnology() {
+        return technology;
+    }
+
+    private void setTechnology(String technology) {
+        this.technology = technology;
+    }
+
     @Override
     public String toString() {
         return "DashboardDataBinder{" +
                 "signalStrength='" + signalStrength + '\'' +
                 ", distance='" + distance + '\'' +
                 ", deviceName='" + deviceName + '\'' +
+                ", technology='" + technology + '\'' +
                 '}';
     }
 }
