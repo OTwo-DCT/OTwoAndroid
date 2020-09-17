@@ -1,4 +1,4 @@
-package org.gautammahapatra.digitalcontacttracing;
+package org.gautammahapatra.otwo;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -6,10 +6,8 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -40,19 +38,6 @@ public class Dashboard extends AppCompatActivity {
     private BluetoothLeScanner bluetoothLeScanner;
     private boolean mScanning;
     private Handler handler = new Handler();
-    private final BroadcastReceiver receiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                int signalStrength = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
-                assert device != null;
-                String deviceName = device.getName();
-                DashboardDataBinder binder = new DashboardDataBinder(signalStrength, deviceName, "B");
-                AddCard(binder);
-            }
-        }
-    };
     private ScanCallback leScanCallback =
             new ScanCallback() {
                 @Override
@@ -70,7 +55,6 @@ public class Dashboard extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         bluetoothAdapter.cancelDiscovery();
-        unregisterReceiver(receiver);
     }
 
     @Override
@@ -84,18 +68,11 @@ public class Dashboard extends AppCompatActivity {
         bluetoothAdapter = bluetoothManager.getAdapter();
         bluetoothLeScanner = bluetoothAdapter.getBluetoothLeScanner();
         scanButton = findViewById(R.id.scan_btn);
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        registerReceiver(receiver, filter);
         mScanning = false;
         scanButton.setOnClickListener(v -> {
-            handler.postDelayed(() -> {
-                bluetoothAdapter.startDiscovery();
-                Log.d("Dashboard", "Start Generic Discovery");
-            }, LE_SCAN_PERIOD_MILLI + 1);
             scanLeDevice();
             Log.d("Dashboard", "Start LE Discovery");
         });
-
         try {
             dashboardDataBinderList = new ArrayList<>();
             adapter = new DashboardAdapter(this, dashboardDataBinderList);

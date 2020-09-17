@@ -25,12 +25,12 @@
         android:id="@+id/app_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/poiret_one"
+        android:fontFamily="@font/archivo_black"
         android:text="@string/title"
         android:textAlignment="center"
         android:textColor="#07689f"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textSize="56sp"
+        android:textStyle="normal" />
 
     <View
         android:layout_width="wrap_content"

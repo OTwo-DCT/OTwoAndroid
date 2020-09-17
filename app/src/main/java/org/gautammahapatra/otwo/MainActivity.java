@@ -1,8 +1,7 @@
-package org.gautammahapatra.digitalcontacttracing;
+package org.gautammahapatra.otwo;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -44,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         TextView appName = findViewById(R.id.app_name);
         ImageView logo = findViewById(R.id.logo);
 
-        appName.setLetterSpacing(0.5f);
+        appName.setLetterSpacing(0.25f);
         labName.setLetterSpacing(0.5f);
 
         Animation topAnim = AnimationUtils.loadAnimation(this, R.anim.top_animation);
@@ -68,17 +67,7 @@ public class MainActivity extends AppCompatActivity {
             loadDashBoardScreen();
         } else {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                new AlertDialog.Builder(this).setTitle("Location Permission").setMessage("Permission needed for scanning nearby bluetooth devices").setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, COARSE_LOCATION_PERMISSION_CODE);
-                    }
-                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).create().show();
+                new AlertDialog.Builder(this).setTitle("Location Permission").setMessage("Permission needed for scanning nearby bluetooth devices").setPositiveButton("Ok", (dialog, which) -> ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, COARSE_LOCATION_PERMISSION_CODE)).setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss()).create().show();
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, COARSE_LOCATION_PERMISSION_CODE);
             }
@@ -97,14 +86,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadDashBoardScreen() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(MainActivity.this, Dashboard.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-                finish();
-            }
+        new Handler().postDelayed(() -> {
+            Intent intent = new Intent(MainActivity.this, Dashboard.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+            finish();
         }, 3000);
     }
 
