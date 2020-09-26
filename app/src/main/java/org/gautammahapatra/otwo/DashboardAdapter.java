@@ -1,4 +1,4 @@
-package org.gautammahapatra.digitalcontacttracing;
+package org.gautammahapatra.otwo;
 
 import android.content.Context;
 import android.view.LayoutInflater;
