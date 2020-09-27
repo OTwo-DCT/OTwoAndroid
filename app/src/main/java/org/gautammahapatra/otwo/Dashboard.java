@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.nio.ByteBuffer;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -116,13 +117,11 @@ public class Dashboard extends AppCompatActivity {
                 @Override
                 public void onScanResult(int callbackType, ScanResult result) {
                     super.onScanResult(callbackType, result);
-                    byte[] scanRecord = Objects.requireNonNull(result.getScanRecord()).getBytes();
                     BluetoothDevice device = result.getDevice();
                     int signalStrength = result.getRssi();
-                    String deviceName = device.getName();
+                    String deviceName = getMajorMinorString(Objects.requireNonNull(result.getScanRecord()).getBytes());
                     DashboardDataBinder binder = new DashboardDataBinder(signalStrength, deviceName, "BLE");
                     AddCard(binder);
-                    Log.d(TAG, deviceName + ":" + hex(scanRecord));
                 }
             };
 
@@ -186,7 +185,7 @@ public class Dashboard extends AppCompatActivity {
         }
     }
 
-    public static String hex(byte[] bytes) {
+    private String hex(byte[] bytes) {
         StringBuilder result = new StringBuilder();
         for (byte aByte : bytes) {
             result.append(String.format("%02x", aByte));
@@ -199,6 +198,7 @@ public class Dashboard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
+        handler = new Handler();
         assert bluetoothManager != null;
         bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         assert bluetoothManager != null;
@@ -213,7 +213,6 @@ public class Dashboard extends AppCompatActivity {
             }
         });
         mScanning = false;
-        handler = new Handler();
         scanButton.setOnClickListener(v -> {
             scanLeDevice();
             Log.d("Dashboard", "Start LE Discovery");
@@ -237,6 +236,7 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void startBroadcast() {
+        broadcastButton.setEnabled(false);
         AdvertiseSettings settings = new AdvertiseSettings.Builder()
                 .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
                 .setConnectable(true)
@@ -262,6 +262,7 @@ public class Dashboard extends AppCompatActivity {
         service.addCharacteristic(characteristic);
 
         bluetoothGattServer.addService(service);
+
     }
 
     protected AdvertiseData setAdvertiseData() {
@@ -273,14 +274,23 @@ public class Dashboard extends AppCompatActivity {
         for (int i = 2; i <= 17; i++) {
             mManufacturerData.put(i, uuid[i - 2]); // adding the UUID
         }
-        mManufacturerData.put(18, (byte) 0xff); // first byte of Major
-        mManufacturerData.put(19, (byte) 0xff); // second byte of Major
-        mManufacturerData.put(20, (byte) 0xff); // first minor
-        mManufacturerData.put(21, (byte) 0xff); // second minor
+        SecureRandom random = new SecureRandom();
+        byte[] majorminor = new byte[4];
+        random.nextBytes(majorminor);
+        mManufacturerData.put(18, majorminor[0]); // first byte of Major
+        mManufacturerData.put(19, majorminor[1]); // second byte of Major
+        mManufacturerData.put(20, majorminor[2]); // first minor
+        mManufacturerData.put(21, majorminor[3]); // second minor
+        Toast.makeText(getApplicationContext(), hex(majorminor), Toast.LENGTH_LONG).show();
         mManufacturerData.put(22, (byte) 0xB5); // txPower
         mBuilder.addManufacturerData(224, mManufacturerData.array()); // using google's company ID
         mBuilder.setIncludeDeviceName(false);
         mBuilder.setIncludeTxPowerLevel(false);
         return mBuilder.build();
+    }
+
+    private String getMajorMinorString(byte[] scanRecordBytes) {
+        byte[] record = {scanRecordBytes[25], scanRecordBytes[26], scanRecordBytes[27], scanRecordBytes[28]};
+        return hex(record);
     }
 }
