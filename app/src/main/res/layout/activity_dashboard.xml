@@ -23,6 +23,19 @@
         android:textStyle="bold" />
 
     <Button
+        android:id="@+id/broadcast_btn"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:fontFamily="@font/montserrat"
+        android:text="@string/broadcast"
+        android:textStyle="bold"
+        app:icon="@drawable/ic_search_black_24dp"
+        app:iconGravity="textStart"
+        app:iconPadding="10dp" />
+
+    <Button
         android:id="@+id/scan_btn"
         style="@style/Widget.MaterialComponents.Button.Icon"
         android:layout_width="match_parent"
