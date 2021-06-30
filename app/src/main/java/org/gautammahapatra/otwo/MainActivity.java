@@ -1,8 +1,10 @@
-package org.gautammahapatra.otwo;
+    package org.gautammahapatra.otwo;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,7 +22,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.Set;
+
+    public class MainActivity extends AppCompatActivity {
 
     private static final int COARSE_LOCATION_PERMISSION_CODE = 1;
     private BluetoothAdapter bluetoothAdapter;
@@ -76,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == COARSE_LOCATION_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 loadDashBoardScreen();
@@ -87,7 +92,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadDashBoardScreen() {
         new Handler().postDelayed(() -> {
-            Intent intent = new Intent(MainActivity.this, Dashboard.class);
+            SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+            Set<String> virtual_ids = sharedPref.getStringSet(getString(R.string.pref_vids_key), null);
+            Intent intent;
+            if (virtual_ids != null && !virtual_ids.isEmpty())
+                intent= new Intent(MainActivity.this, Dashboard.class);
+            else {
+                intent= new Intent(MainActivity.this, Registration.class);
+            }
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
             finish();

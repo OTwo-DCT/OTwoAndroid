@@ -10,4 +10,11 @@
     <string name="meter">m</string>
     <string name="distance">distance</string>
     <string name="broadcast">Broadcast</string>
+    <string name="preference_file_key">otwo-sp</string>
+    <string name="pref_vids_key">otwo-vids</string>
+    <string name="register">Register</string>
+    <string name="phone_hint">Phone Number</string>
+    <string name="api_url">https://07e0cd239e45.ngrok.io/vids</string>
+    <string name="vid">Get New Virtual ID</string>
+    <string name="phone_pref_key">phone-pref</string>
 </resources>
