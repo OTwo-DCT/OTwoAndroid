@@ -43,17 +43,17 @@ public class Registration extends AppCompatActivity {
                 try {
                     data.put("phone_number", phoneNumber.toString());
                     RequestQueue queue = Volley.newRequestQueue(this);
-                    String url = getString(R.string.api_url);
+                    String url = getString(R.string.api_url)+ "/requestVirtualID";
                     JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, data, response -> {
                         if (response.has("data")) {
                             try {
-                                if (response.getJSONObject("data").has("vids")) {
-                                    JSONArray vids = response.getJSONObject("data").getJSONArray("vids");
-                                    Set<String> vids_pref = new HashSet<>();
-                                    for (int i = 0; i < vids.length(); i++) {
-                                        vids_pref.add(vids.getString(i));
+                                if (response.getJSONObject("data").has("virtual_id")) {
+                                    JSONArray virtual_id = response.getJSONObject("data").getJSONArray("virtual_id");
+                                    Set<String> virtual_id_pref = new HashSet<>();
+                                    for (int i = 0; i < virtual_id.length(); i++) {
+                                        virtual_id_pref.add(virtual_id.getString(i));
                                     }
-                                    editor.putStringSet(getString(R.string.pref_vids_key), vids_pref);
+                                    editor.putStringSet(getString(R.string.pref_virtual_id_key), virtual_id_pref);
                                     editor.apply();
                                     Intent intent = new Intent(Registration.this, Dashboard.class);
                                     startActivity(intent);

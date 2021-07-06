@@ -93,7 +93,7 @@ import java.util.Set;
     private void loadDashBoardScreen() {
         new Handler().postDelayed(() -> {
             SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-            Set<String> virtual_ids = sharedPref.getStringSet(getString(R.string.pref_vids_key), null);
+            Set<String> virtual_ids = sharedPref.getStringSet(getString(R.string.pref_virtual_id_key), null);
             Intent intent;
             if (virtual_ids != null && !virtual_ids.isEmpty())
                 intent= new Intent(MainActivity.this, Dashboard.class);
